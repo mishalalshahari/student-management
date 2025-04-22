@@ -2,6 +2,7 @@ package com.studentmanagement.Controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.studentmanagement.DTO.StudentDTO;
-import com.studentmanagement.Entity.Student;
 import com.studentmanagement.Service.StudentService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,65 +26,78 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StudentController {
 
+	@Autowired
 	private StudentService studentService;
 
+	@Operation
     @PostMapping
     public ResponseEntity<StudentDTO> createStudent(@RequestBody StudentDTO dto) {
         StudentDTO saved = studentService.save(dto);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
+	@Operation
     @GetMapping("/{id}")
     public ResponseEntity<StudentDTO> getStudent(@PathVariable Long id) {
         return ResponseEntity.ok(studentService.getById(id));
     }
 
+	@Operation
     @GetMapping
     public ResponseEntity<List<StudentDTO>> getAllStudents() {
         return ResponseEntity.ok(studentService.findAll());
     }
 
+	@Operation
     @PutMapping("/{id}")
     public ResponseEntity<StudentDTO> updateStudent(@PathVariable Long id, @RequestBody StudentDTO dto) {
         return ResponseEntity.ok(studentService.update(id, dto));
     }
 
+	@Operation
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
         studentService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
+	@Operation
     @GetMapping("/exists")
     public boolean existsByEmail(@RequestParam String email) {
         return studentService.existsByEmail(email);
     }
 
+	@Operation
     @GetMapping("/count")
     public long count() {
         return studentService.countStudents();
     }
 
+	@Operation
     @GetMapping("/by-name")
     public ResponseEntity<List<StudentDTO>> getByName(@RequestParam String name) {
         return ResponseEntity.ok(studentService.findByName(name));
     }
 
+	@Operation
     @GetMapping("/above-age")
     public ResponseEntity<List<StudentDTO>> getAboveAge(@RequestParam int age) {
         return ResponseEntity.ok(studentService.findByAgeGreaterThan(age));
     }
 
+	@Operation
     @GetMapping("/starts-with")
     public ResponseEntity<List<StudentDTO>> startsWith(@RequestParam String prefix) {
         return ResponseEntity.ok(studentService.findByNameStartingWith(prefix));
     }
 
+	@Operation
     @GetMapping("/search")
     public ResponseEntity<List<StudentDTO>> search(@RequestParam String keyword) {
         return ResponseEntity.ok(studentService.searchByNameKeyword(keyword));
     }
 
+	@Operation
     @GetMapping("/sorted")
     public ResponseEntity<List<StudentDTO>> getSortedByName() {
         return ResponseEntity.ok(studentService.findAllSortedByNameAsc());
